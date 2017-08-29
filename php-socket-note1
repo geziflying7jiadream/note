@@ -1,0 +1,97 @@
+#博客中详解socket:
+http://blog.csdn.net/sight_/article/details/8138802
+
+##########################################################################################################################
+
+# PHP socket编程
+PHP有强大的Socket操作能力，它的处理方式更接近于C，但是没有C的繁琐。可以看作是对C操作的Socket的一个封装。
+开启一个socket监听示例程序：
+<?php//设置一些基本的变量
+$host="192.168.1.99";//主机地址
+$port=1234;//端口
+//设置超时时间
+set_time_limit(0);
+//创建一个Socket
+$socket=socket_create(AF_INET,SOCK_STREAM,0)ordie("Couldnotcreatesocket\n");//绑定Socket到端口
+$result=socket_bind($socket,$host,$port)ordie("Couldnotbindtosocket\n");//开始监听链接
+$result=socket_listen($socket,3)ordie("Couldnotsetupsocketlistener\n");//acceptincomingconnections
+//另一个Socket来处理通信
+$spawn=socket_accept($socket)ordie("Couldnotacceptincomingconnection\n");//获得客户端的输入
+$input=socket_read($spawn,1024)ordie("Couldnotreadinput\n");//清空输入字符串
+$input=trim($input);//处理客户端输入并返回结果
+$output=strrev($input)."\n";
+socket_write($spawn,$output,strlen($output))ordie("Couldnotwriteoutput\n");//关闭
+socket_close($spawn);
+socket_close($socket);
+
+#################################################################################################################
+
+# PHP socket编程
+ 目标：开发一个客户端发送字符串信息到服务器同时服务器发送相同字符串的反转字符串给客户端。
+
+PHP Server
+
+Step.1 设置变量主机“Host"和端口”Port"
+
+[php] view plaincopy
+$host = "127.0.0.1";  
+$port = 5353;  
+// No Timeout   
+set_time_limit(0);  
+端口号port可以是1024 -65535之间的任意整数。
+
+
+Step2. 创建Socket
+
+[php] view plaincopy
+$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");  
+
+
+Step3. 将socket绑定到端口和主机
+
+[php] view plaincopy
+$result = socket_bind($socket, $host, $port) or die("Could not bind to socket\n");    
+
+这里step2创建的socket被绑定到IP地址和端口。
+
+
+
+Step4. 启动监听socket
+
+绑定了IP地址和端口之后，服务器等待客户端连接，一直处于等待。
+
+[php] view plaincopy
+$result = socket_listen($socket, 3) or die("Could not set up socket listener\n");  
+
+Step 5: 接受进来的连接
+
+这个函数接受进来的连接请求并且创建socket。在接受了客户端的连接之后，这个函数返回了另外一个socket来实际负责与相应客户端socket的通讯。下面代码中的“$spawn"就是负责与客户端socket通讯的服务器端socket.
+
+[php] view plaincopy
+$spawn = socket_accept($socket) or die("Could not accept incoming connection\n")  
+到目前为止，我们已经准备好了服务器但是目前的代码实际上什么也做不了。回顾我们之前说过的目标，我们将要从客户端socket读取字符串并将字符串反转然后返回给客户端socket.
+
+
+
+Step6: 从客户端接收字符串
+
+[php] view plaincopy
+$input = socket_read($spawn, 1024) or die("Could not read input\n");  
+
+
+Step7: 反转字符串
+
+[php] view plaincopy
+$output = strrev($input) . "\n";  
+
+Step 8: 把字符串发送给客户端socket
+
+[php] view plaincopy
+socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");  
+
+
+Step9 : 关闭服务器端Socket
+
+[php] view plaincopy
+socket_close($spawn);  
+socket_close($socket);  
