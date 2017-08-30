@@ -1,0 +1,18 @@
+公司启动虚拟镜像设置：
+1.本地安装好环境：运行redis能够启动
+2.本地项目文件夹www：从sourceTree中克隆代码，本地出现代码项目
+3.VM虚拟机启动：出现错误没有64位操作虚拟化，查看：Windows7中Virtualbox没办法选择和安装64位的Linux系统
+               一般是BIOS没有将本机CPU设置成CPU虚拟化：重新启动+F2——》找到virtualzation(虚拟化)   关闭-》打开即可
+ 4.添加事先解压好的镜像：Ubuntu.vdi
+ 5.成功进入虚拟机
+ 6.设置共享文件夹:没有的话添加+
+               /mnt/test_share/本地文件夹（WWW）共享过来的项目及代码
+ 7.找到虚拟机中项目启动程序：/home/zmliu/php/bin/php  最后php是一个启动程序
+ 8.在虚拟机中共享文件夹/项目文件下，执行ExtGameService.php  这样虚拟机中服务器端运行
+   具体演示
+     虚拟机:/mnt/test_share/本地文件夹(WWW)$ /home/zmliu/php/bin/php ExtGameService.php 开启服务器+执行程序
+     ;;;;;;;;;;;;;;;;;;;;;;;;
+     显示：pid:2589
+          swoole version: XXX
+     ;;;;;;;;;;;;;;;;;;;;;;;;
+     ok——>可以开发啦
