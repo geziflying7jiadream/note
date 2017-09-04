@@ -1,0 +1,5 @@
+本地开启redis-server.php
+VM:
+设置共享文件夹:www(本地共享文件夹)，
+VM中网络：ipv4
+192.
