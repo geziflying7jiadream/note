@@ -12,3 +12,6 @@ VM中网络：ipv4
 文件夹$ /home/zmliu/php/bin/php ExtGameService.php
 启动（redis开启）之后，运行时一致打开，
 不用时ctrl+c退出
+
+1.枣庄麻将
+sudo mount -t vboxsf www /mnt/test_share
