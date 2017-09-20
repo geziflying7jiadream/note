@@ -1,0 +1,48 @@
+地址：u011904605的博客
+http://blog.csdn.net/u011904605/article/details/51927003
+
+
+下面说一下如何通过git来保存我们的操作.
+命令行模式
+
+首先介绍几个命令:
+
+命令	功能
+git status	查看仓库当前的状态
+git add 文件路径加文件名	将该文件添加到暂存区
+git add .	将该文件夹下所有有变动的文件都加到暂存区
+git add -A	同上
+git commit -m “备注”	将暂存区的文件提交到仓库
+
+版本回退的命令,请看下表:
+
+命令	功能
+git reset –hard HEAD^	回退到上一个版本
+git reset –hard HEAD^^	回退两个版本
+git reset –hard HEAD~100	回退100个版本
+git reset –hard xxxxx(commit的id)	回退到对应的版本
+实际上一般最后一个命令是比较常用的,例如我现在需要回退到一开始的版本,那么我只需要在终端中输入git reset --hard 350e137
+
+现在如果再打开README.md文件,会发现后来提交的内容已经不见了. 
+可以试一下现在使用git log命令会怎么样.可以发现,提交的历史记录只剩一个了!我还想回退该怎么办??
+不要心慌不要着急,请使用git reflog命令来查看记录,找到对应的commit id.
+
+
+一个master分支,一个develop分支,团队里的每个人都有一个分支,每个人的每个功能都有一个分支. 
+这里写图片描述
+
+当然,项目过程中可以缩减一层,也就是每个人都在develop分支上面直接根据功能创建分支,功能完成之后直接合并到develop分支上面.
+
+命令行模式
+
+命令	功能
+git checkout -b develop	创建一个名为develop的分支,并切换到该分支
+git branch develop	创建一个名为develop的分支
+git checkout develop	切换到develop分支
+git branch	查看所有分支和当前分支
+git merge develop	将develop分支合并到当前分支
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+SourceTree模式
+看图就能明白了,so easy啊.可以看到,每次提交都有记录的.如果想回到哪个版本,直接双击. 
