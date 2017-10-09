@@ -6,6 +6,10 @@
  redis下载地址 https://redis.io/clients
  
  phpRedisAdmin介绍 http://www.jianshu.com/p/0792472b4a1d  Redis在线管理工具
+ 
+ phpstrom 9.0.0.0版本 的注册码，好兴奋：http://www.cnblogs.com/xiaomingzaixian/p/4759237.html
+ 
+# phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
 # MySQL下载地址
@@ -14,4 +18,3 @@
 # wampserver下载地址
 # phpstudy下载地址
 # xxamp下载地址
-# phpstorm下载地址
