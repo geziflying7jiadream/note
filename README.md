@@ -2,6 +2,7 @@
  php下载地址 https://secure.php.net/
  
  egret下载地址 https://www.egret.com/ HTML5小游戏
+ egret小白入门文档 http://edn.egret.com/cn/index.php?g=&m=article&a=index&id=217&terms1_id=20&terms2_id=24
  
  redis下载地址 https://redis.io/clients
  
