@@ -7,6 +7,8 @@
  
  egret小白入门文档 http://edn.egret.com/cn/index.php?g=&m=article&a=index&id=217&terms1_id=20&terms2_id=24
  
+ egret中使用的Typescript语言手册 http://bbs.egret.com/thread-1441-1-1.html
+ 
  redis下载地址 https://redis.io/clients
  
  phpRedisAdmin介绍 http://www.jianshu.com/p/0792472b4a1d  Redis在线管理工具
@@ -21,4 +23,4 @@
 # apache下载地址
 # wampserver下载地址
 # phpstudy下载地址
-# xxamp下载地址
+# xammp下载地址
