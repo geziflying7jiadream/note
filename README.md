@@ -15,6 +15,8 @@
  
  phpstrom 9.0.0.0版本 的注册码，好兴奋：http://www.cnblogs.com/xiaomingzaixian/p/4759237.html
  
+ Adobe注册  jiagege Lingjing2009
+ 
 # phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
