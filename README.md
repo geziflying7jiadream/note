@@ -16,6 +16,9 @@
  phpstrom 9.0.0.0版本 的注册码，好兴奋：http://www.cnblogs.com/xiaomingzaixian/p/4759237.html
  
  Adobe注册  jiagege Lingjing2009
+ 自动化测试学习：乙醇的cnblog 1、python测试网站 http://www.cnblogs.com/nbkhic/tag/webdriver/ 
+ 2、视频 https://github.com/easonhan007/watir_wd_cn_video 
+ 3、指导 https://github.com/easonhan007/webdriver_guide/blob/master/README.md 
  
 # phpstorm下载地址 
 # Linux下载地址 
