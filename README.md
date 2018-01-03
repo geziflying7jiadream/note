@@ -19,7 +19,6 @@
  自动化测试学习：乙醇的cnblog 1、python测试网站 http://www.cnblogs.com/nbkhic/tag/webdriver/ 
  2、视频 https://github.com/easonhan007/watir_wd_cn_video 
  3、指导 https://github.com/easonhan007/webdriver_guide/blob/master/README.md 
- 
 # phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
