@@ -26,6 +26,7 @@
  微信小程序游戏 https://www.w3cschool.cn/wxagame/
  
  微信小程序学习视频 http://www.php.cn/course/678.html
+ 腾讯云开发环境 邮箱用户名、Jiagege123?
  
 # phpstorm下载地址 
 # Linux下载地址 
