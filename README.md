@@ -25,6 +25,8 @@
  微信小程序 https://www.w3cschool.cn/weixinapp/
  微信小程序游戏 https://www.w3cschool.cn/wxagame/
  
+ 微信小程序学习视频 http://www.php.cn/course/678.html
+ 
 # phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
