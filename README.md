@@ -1,6 +1,8 @@
 # note
  php下载地址 https://secure.php.net/
  
+ TenserFlow官方文档地址 http://wiki.jikexueyuan.com/project/tensorflow-zh/
+ 
  egret下载地址 https://www.egret.com/ HTML5小游戏
  
  egret GitHub官方代码库 https://github.com/egret-labs/egret-core
