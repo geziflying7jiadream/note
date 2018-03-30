@@ -1,0 +1,31 @@
+------------矩阵设置颜色填充
+
+public setGreen(display:egret.DisplayObject):void{
+			if(!display)return;
+			var colorMatrix = [
+				0.65, 0, 0, 0, 0,
+				0, 0.9, 0, 0.3, 0,
+				0, 0, 0.55, 0, 0,
+				0, 0.3, 0, 1, 0
+			];
+			var colorFlilter = new egret.ColorMatrixFilter(colorMatrix);
+			display.filters = [colorFlilter];
+        }
+        public clearGreen(display:egret.DisplayObject):void{
+			if(!display)return;			
+            display.filters = null;
+        }
+        
+        
+-----------------------------------------------------------        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+   
