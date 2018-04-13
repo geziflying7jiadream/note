@@ -1,0 +1,110 @@
+-------------调用贝塞尔曲线运动接口----
+public target:egret.Shape;
+public testCreateGameScene2(){
+    var startX:number = 0;
+    var startY:number = 300;
+    var p0H:number = 0;
+    var p1x:number = 200;
+    var p1y:number = 200;
+    var p1y_err:number = 0;
+
+    this.target = new egret.Shape();
+    this.target.graphics.beginFill(0xff0000);
+    this.target.graphics.drawCircle(startX,startY,8);
+    this.target.graphics.endFill();
+    this.addChild(this.target);
+
+    var beisaier:egret.DisplayObjectContainer = new BeiSaiErPanel(this.target,startX,startY,p0H,p1x,p1y,p1y_err);
+    this.addChild(beisaier);
+}
+
+
+---BeiSaiErPanel.ts类-----贝塞尔曲线运动接口--------------------------------
+class BeiSaiErPanel extends egret.DisplayObjectContainer{
+	public target:any;
+	//需求为实现对象沿line3轨迹运动  
+    public objectPoint:egret.Point;//起点P0 
+    public objectWH:number;//控制p0点起始y高度，控制曲线的起点p0
+    public highX:number;//
+    public highY:number;//控制曲线的p1点高低，
+	public highYError:number;//p1点高度误差
+    public stageH:number;//舞台高
+    public mainObject:egret.Point;//终点P2
+	public delay:number;//缓动时间
+	public loopLine:boolean;//是否循环播放 默认：false
+
+	public constructor(target:any, startX:number = 0, startY:number = 0, p0WH:number = 0, p1X:number = 0, p1Y:number = 0, p1Y_err:number = 0,stageH:number = 500,endX:number = 0, endY:number = 0,delay:number = 1000,loopLine:boolean = true) {
+		super();
+		this.addEventListener(egret.Event.ENTER_FRAME,this.onFrame,this);
+		this.target = target;
+		this.objectPoint = new egret.Point(startX,startY);
+		this.mainObject  = new egret.Point(endX,endY);
+
+		this.objectWH = p0WH;
+		this.highYError = p1Y_err;
+
+		this.highX = p1X;
+		this.highY = p1Y - this.highYError;
+		
+		this.stageH = stageH;
+		this.delay = delay;
+		this.loopLine = loopLine;
+
+		this.drawLine();
+	}
+
+	public onFrame(e:egret.Event){
+        this.target.x = this.mainObject.x;
+        this.target.y = this.mainObject.y - this.objectPoint.y;
+    }
+
+	public drawLine(){
+		//为方便调试,先把三条线画出来  
+        // let line1 = new egret.Shape()  
+        // if(!this.objectPoint)return;
+        // line1.graphics.lineStyle(1,0x00868B);  
+        // line1.graphics.moveTo(this.objectPoint.x, this.objectPoint.y - this.objectWH);  //起点  
+        // line1.graphics.lineTo(this.highX, this.highY);  
+        // line1.graphics.lineTo(this.highX*2 - this.objectPoint.x, this.stageH- this.objectWH);  
+        // line1.graphics.endFill();
+        // this.addChild(line1);
+    
+        let line2 = new egret.Shape();
+        line2.graphics.lineStyle(1,0x00868B);
+        line2.graphics.moveTo(this.objectPoint.x, this.objectPoint.y - this.objectWH);  //起点  
+        line2.graphics.curveTo(this.highX, this.highY, this.highX*2 - this.objectPoint.x, this.stageH- this.objectWH);  //控制点,终点  
+        line2.graphics.endFill(); 
+        this.addChild(line2);
+    
+        // let line4 = new egret.Shape();          
+        // line4.graphics.lineStyle(1,0x4B0082);  
+        // line4.graphics.moveTo(this.objectPoint.x, this.objectPoint.y - this.objectWH);  //起点  
+        // line4.graphics.lineTo(this.highX, this.highY);  
+        // line4.graphics.lineTo(this.highX*2 - this.objectPoint.x, this.stageH- this.objectWH);  
+        // line4.graphics.endFill();  
+        // this.addChild(line4);  
+        //line2为真实贝塞尔曲线轨迹,但是因为最高点过低而导致运动效果不太好,所以我们修改控制点的Y值,来打到较好的效果  
+        let line3 = new egret.Shape();  
+        line3.graphics.lineStyle(1,0x4B0082);  
+        line3.graphics.moveTo(this.objectPoint.x, this.objectPoint.y - this.objectWH);  //起点  
+        line3.graphics.curveTo(this.highX, this.highY -200, this.highX*2 - this.objectPoint.x, this.stageH- this.objectWH);  //控制点,终点  
+        line3.graphics.endFill();  
+        this.addChild(line3);
+
+		//在1秒内，this的factor属性将会缓慢趋近1这个值，这里的factor就是曲线中的t属性，它是从0到1的闭区间。  
+        egret.Tween.get(this,{loop:this.loopLine}).to({factor: 1}, this.delay);  
+	}
+
+	//添加factor的set,get方法,注意用public  
+    public get factor():number {  
+        return 0;
+    }  
+    
+    //利用egret的缓动动画Tween来实现动画  
+    //二次方贝塞尔公式 (1 - t)^2 P0 + 2 t (1 - t) P1 + t^2 P2  
+    //起点P0  控制点P1  终点P2  
+    public set factor(value:number) { 
+        this.mainObject.x = (1 - value) * (1 - value) * this.objectPoint.x + 2 * value * (1 - value) * this.highX + value * value * (this.highX*2 - this.objectPoint.x);  
+        this.mainObject.y = (1 - value) * (1 - value) * (this.objectPoint.y - this.objectWH) + 2 * value * (1 - value) * (this.highY ) + value * value * (this.stageH- this.objectWH);  
+    } 
+}
