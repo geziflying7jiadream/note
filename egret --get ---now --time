@@ -1,0 +1,221 @@
+使用egret获取当前的时间：
+class ReportTime extends  egret.DisplayObjectContainer{
+
+    private now = new Date(); //当前日期
+    private nowDayOfWeek = this.now.getDay(); //今天本周的第几天
+    private nowDay = this.now.getDate(); //当前日
+    private nowMonth = this.now.getMonth(); //当前月
+    private nowYear = this.now.getFullYear();  //当前年
+    // private lastMonthDate = new Date(); //上月日期
+    // private lastYear =  this.lastMonthDate.getFullYear();
+    // private lastMonth = this.lastMonthDate.getMonth();
+
+    public constructor() {
+        super();
+        // this.addEventListener(egret.Event.ADDED_TO_STAGE,this.addToStage,this);
+    }
+    private addTiem(){
+        this.nowYear += (this.nowYear < 2000) ? 1900 : 0;
+        // this.lastMonthDate.setDate(1);
+        // this.lastMonthDate.setMonth(this.lastMonthDate.getMonth()-1);
+    }
+    //格式化日期：yyyy-MM-dd
+    public formatDate(date) {
+        let myyear = date.getFullYear();
+        let mymonth = date.getMonth()+1;
+        let myweekday = date.getDate();
+
+        if(mymonth < 10){
+            mymonth = "0" + mymonth;
+        }
+        if(myweekday < 10){
+            myweekday = "0" + myweekday;
+        }
+        return (myyear+"-"+mymonth + "-" + myweekday);
+    }
+    
+    public formatReportDate(dates,specific){
+        dates = new Date(dates);
+        console.log(dates);
+        let myyear = dates.getFullYear();
+        let mymonth = dates.getMonth()+1;
+        let myweekday = dates.getDate();
+        let myday = dates.getDay();
+        let hh = dates.getHours();            //时
+        let mm = dates.getMinutes();          //分
+        let ss = dates.getSeconds();           //秒
+
+
+        if(mymonth < 10){
+            mymonth = "0" + mymonth;
+        }
+        if(myweekday < 10){
+            myweekday = "0" + myweekday;
+        }
+        if(specific == 1){
+            return (mymonth + "-" + myweekday + " "+GlobalVariable.getLangDay(myday) +" "+hh+":"+mm+":"+ss);
+        }
+        return (mymonth + "-" + myweekday + " "+GlobalVariable.getLangDay(myday) );
+    }
+
+    public getCurrentDate(){
+        let mymonth = this.now.getMonth()+1;
+        let myweekday = this.now.getDate();
+        if(mymonth < 10){
+            mymonth = <any>"0" + mymonth;
+        }
+        if(myweekday < 10){
+            myweekday = <any>"0" + myweekday;
+        }
+        let time = this.now.getFullYear()+"-"+mymonth+"-"+myweekday;
+        return time;
+    }
+
+    //获得某月的天数
+    public getMonthDays(myMonth){
+        this.addTiem();
+        let monthStartDate:any = new Date(this.nowYear, myMonth, 1);
+        let monthEndDate:any = new Date(this.nowYear, myMonth + 1, 1);
+        let days = (monthEndDate - monthStartDate)/(1000 * 60 * 60 * 24);
+        return days;
+    }
+    //获取昨天的日期
+    public getYesterDay(thisTime){
+        var time = new Date(thisTime); // 1 Feb -> 30 Jan
+        time.setDate(time.getDate() - 1);
+        let yesterDay = time.getFullYear()+"-" + (time.getMonth()+1) + "-" + time.getDate();
+        return yesterDay;
+    }
+    //获取明天的日期
+    public getTomorrow(thisTime){
+        var time = new Date(thisTime); // 1 Feb -> 30 Jan
+        time.setDate(time.getDate() +1);
+        let mymonth = time.getMonth()+1;
+        let myweekday = time.getDate();
+        if(mymonth < 10){
+            mymonth = <any>"0" + mymonth;
+        }
+        if(myweekday < 10){
+            myweekday = <any>"0" + myweekday;
+        }
+        let Tomorrow = time.getFullYear()+"-" + mymonth + "-" + myweekday;
+        return Tomorrow;
+    }
+
+    //获得本季度的开始月份
+    public getQuarterStartMonth(){
+        let quarterStartMonth = 0;
+        if(this.nowMonth<3){
+            quarterStartMonth = 0;
+        }
+        if(2<this.nowMonth && this.nowMonth<6){
+            quarterStartMonth = 3;
+        }
+        if(5<this.nowMonth && this.nowMonth<9){
+            quarterStartMonth = 6;
+        }
+        if(this.nowMonth>8){
+            quarterStartMonth = 9;
+        }
+        return quarterStartMonth;
+    }
+
+    //获取七天前的日期
+    public getSevenDaysDate(index){
+        //index= -7；index= 7 前后
+        let date = new Date(); //当前日期
+        let newDate = new Date();
+        newDate.setDate(date.getDate() + index);//官方文档上虽然说setDate参数是1-31,其实是可以设置负数的
+        let mymonth = newDate.getMonth()+1;
+        let myweekday = newDate.getDate();
+        if(mymonth < 10){
+            mymonth = <any>"0" + mymonth;
+        }
+        if(myweekday < 10){
+            myweekday = <any>"0" + myweekday;
+        }
+        let time = newDate.getFullYear()+"-"+mymonth+"-"+myweekday;
+        return time;
+    }
+
+    
+
+    //获得本周的开始日期
+    public getWeekStartDate() {
+        this.addTiem();
+        let weekStartDate = new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek);
+        return this.formatDate(weekStartDate);
+    }
+
+    //获得本周的结束日期
+    public getWeekEndDate() {
+        this.addTiem();
+        let weekEndDate = new Date(this.nowYear, this.nowMonth, this.nowDay + (6 - this.nowDayOfWeek));
+        return this.formatDate(weekEndDate);
+    }
+    //获得上周的开始日期   
+    public getLastWeekStartDate() {   
+        let weekStartDate = new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek - 7);   
+        return this.formatDate(weekStartDate);   
+    }   
+    //获得上周的结束日期   
+    public getLastWeekEndDate() {   
+        let weekEndDate = new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek - 1);   
+        return this.formatDate(weekEndDate);   
+    }
+
+    //获得本月的开始日期
+    public getMonthStartDate(){
+        this.addTiem();
+        let monthStartDate = new Date(this.nowYear, this.nowMonth, 1);
+        return this.formatDate(monthStartDate);
+    }
+
+    //获得本月的结束日期
+    public getMonthEndDate(){
+        this.addTiem();
+        let monthEndDate = new Date(this.nowYear, this.nowMonth, this.getMonthDays(this.nowMonth));
+        return this.formatDate(monthEndDate);
+    }
+
+    //获得上月开始时间
+    public getLastMonthStartDate(){
+        let lastMonthDate = new Date(); //上月日期
+        lastMonthDate.setDate(1);
+        lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+        let lastYear = lastMonthDate.getFullYear();
+        let lastMonth = lastMonthDate.getMonth();
+
+        let lastMonthStartDate = new Date(this.nowYear, lastMonth, 1);
+        return this.formatDate(lastMonthStartDate);
+    }
+
+    //获得上月结束时间
+    public getLastMonthEndDate(){
+        this.addTiem();
+        let lastMonthDate = new Date(); //上月日期
+        lastMonthDate.setDate(1);
+        lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+        let lastYear = lastMonthDate.getFullYear();
+        let lastMonth = lastMonthDate.getMonth();
+
+        let lastMonthEndDate = new Date(this.nowYear, lastMonth, this.getMonthDays(lastMonth));
+        return this.formatDate(lastMonthEndDate);
+    }
+
+    //获得本季度的开始日期
+    public getQuarterStartDate(){
+        this.addTiem();
+        let quarterStartDate = new Date(this.nowYear, this.getQuarterStartMonth(), 1);
+        return this.formatDate(quarterStartDate);
+    }
+
+    //或的本季度的结束日期
+    public getQuarterEndDate(){
+        this.addTiem();
+        let quarterEndMonth = this.getQuarterStartMonth() + 2;
+        let quarterStartDate = new Date(this.nowYear, quarterEndMonth, this.getMonthDays(quarterEndMonth));
+        return this.formatDate(quarterStartDate);
+    }
+}
+
