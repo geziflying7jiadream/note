@@ -1,0 +1,6 @@
+everyday you study a little,the future your progress will be a big step.
+if you want to use sound,first you should create a object,  
+var sound:egret.Sound = new egret.Sound(),
+then,you should load a source of sound,and when it load complete ,listener complete ,callback a function ,you can play it .
+sound.play();
+this sound obj,soundChannel obj ,your control is soundChannel is not Sound.
