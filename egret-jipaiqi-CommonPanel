@@ -1,0 +1,61 @@
+public addJipaiqiBtn:MyButton;
+//------------------------------初始化---------------------------
+if(this.addJipaiqiBtn){
+			egret.Tween.get(this.addJipaiqiBtn,{loop:true})
+				.to({scaleX:1.2,scaleY:1.2},600)
+				.to({scaleX:1,scaleY:1},270).wait(2000);
+			this.initAddJipaiqiBtn();
+		}
+
+//-----------------------------初始化记牌器状态---------------------------
+//看广告得记牌器
+	public initAddJipaiqiBtn(){
+		this.addJipaiqiBtn.touchEnabled = false;
+		if(RoleData.getRole().jipaiqiCount < 3){
+			this.addJipaiqiBtn.touchEnabled = true;
+			this.addJipaiqiBtn.setCallBack(egret.TouchEvent.TOUCH_TAP,this.onAddJipaiqiBtn,this);
+		}
+		//记牌器看广告，只显示一次
+		if(RoleData.getWatchAdjipaiqiOK()){
+			// this.addJipaiqiBtn.touchEnabled = false;
+			this.addJipaiqiBtn.visible = false;
+		}
+	}
+
+public onAddJipaiqiBtn(e:egret.TouchEvent){
+		//观看广告
+		this.lookAd((result)=>{
+			egret.log("看了广告次数"+result);
+			if(result){
+				//添加记牌器接口
+				RoleApi.addChangeJipaiqiTotals((data:any)=>{
+					if(data.state == 0){
+						if(data.jipaiqiCount){
+							var role:Role = RoleData.getRole();
+							role.jipaiqiCount = data.jipaiqiCount;
+							RoleData.putRole(role);
+							ControllAlert.show("记牌器+"+data.addNumber);
+							console.log("现在的记牌器数量:"+RoleData.getRole().jipaiqiCount);
+							//倒计时或者按钮不可点
+							if(!RoleData.getWatchAdjipaiqiOK()){
+								RoleData.putWatchAdjipaiqiOK();
+							}
+							this.initAddJipaiqiBtn();
+						}
+					}
+				});
+			}
+		});
+	}
+	/** 看广告 */
+	public lookAd(callback:Function){
+		let thisObj = this;
+		if(AppConfig.isLocal){
+			var random = Math.random();
+			callback.apply(thisObj,[random > 0.5]);
+		}else{
+			platform.showRewardedVideoAd((e)=>{
+				callback.apply(thisObj,[e.isEnded]);
+			});
+		}
+	}
