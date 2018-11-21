@@ -1,1 +1,216 @@
-//基础的金币非的效果
+/**点击陨石金币飞行效果 */
+class FlyGold
+{
+    private _pointStart:number[];
+    private _pointEnd:number[];
+    private _container:egret.DisplayObjectContainer;            //diamondm
+    private _goldBmpList:egret.Bitmap[];
+    private _type:string;
+
+    private _point1List:number[][];
+    private _point2List:number[][];
+
+    private _itemCount:number;
+    private _onComplete:Function;
+
+    public constructor()
+    {
+        this._onComplete = null;
+        this._itemCount = 0;
+    }
+
+    /**
+     * @param pointStart    初始点
+     * @param pointEnd      最终点
+     * @param container     播放动画容器
+     */
+    public init(pointStart:number[], pointEnd:number[], container:egret.DisplayObjectContainer, type:string = "gold")
+    {
+        this._pointStart = pointStart;
+        this._pointEnd   = pointEnd;
+        this._container  = container;
+        this._type       = type;
+        this._point1List = [];
+        this._point2List = [];
+        this._goldBmpList= []
+        this.createBmpList();
+    }
+
+    private createBmpList()
+    {
+        // console.log('初始点：', this._pointStart[0], this._pointStart[1]);
+        for (let i = 0; i < 5; i++) {
+            let newGoldBmp:egret.Bitmap = null;
+            if (this._type == "gold") {
+                newGoldBmp = new egret.Bitmap(RES.getRes("gold_png")); //this.pickUpItemImg("gold_png");
+            } else {
+                newGoldBmp = new egret.Bitmap(RES.getRes("diamond_png")); ///this.pickUpItemImg("diamond_png");
+            }
+            
+            newGoldBmp.x = this._pointStart[0];
+            newGoldBmp.y = this._pointStart[1];
+            newGoldBmp.anchorOffsetX = newGoldBmp.width / 2;
+            newGoldBmp.anchorOffsetY = newGoldBmp.height / 2;
+            this._container.addChild(newGoldBmp);
+            this._goldBmpList.push(newGoldBmp);
+
+            var point1_X = this._pointStart[0] + Math.random() * 200;
+            var point1_Y = this._pointStart[1] + Math.random() * 300 - 100;
+            // while (point1_X < this._pointStart[0] && point1_Y < this._pointStart[1]) {
+            //     point1_X = this._pointStart[0] + Math.random() * 300;
+            //     point1_Y = this._pointStart[1] + Math.random() * 300 - 100;
+            //     console.log("新的点：", point1_X, point1_Y)
+            // }
+            // console.log('满足条件的点：', point1_X, point1_Y);
+
+            this._point1List.push([point1_X, point1_Y]);
+
+            let point2_X = Math.random() * (this._pointEnd[0] - this._pointStart[0]) + this._pointStart[0];
+            let point2_Y = Math.random() * (this._pointEnd[1] - this._pointStart[1]) + this._pointStart[1];
+            this._point2List.push([point2_X, point2_Y]);
+        }
+    }
+
+    private putDownItemImg(img:egret.Bitmap)
+    {
+        img.visible = false;
+        App.ObjectPool.putDown(img);
+    }
+
+    private pickUpItemImg(imgRes:string)
+    {
+        var img = App.ObjectPool.pickUp(egret.Bitmap, imgRes);
+        img.visible = true;
+        return img;
+    }
+
+    /**
+     * 播放5个金币图片飞行效果---实时创建
+     * @param container     播放动画容器
+     *  */
+    public play(container:egret.DisplayObjectContainer = null)
+    {
+        if (this.getR(this._pointStart, this._pointEnd) < 200) {
+            var time1:number = Math.random() * 500 + 500;
+            var time2:number = Math.random() * 500 + 500;
+            var time3:number = Math.random() * 500 + 500;
+            var time4:number = Math.random() * 500 + 500;
+            var time5:number = Math.random() * 500 + 500;
+        } else if (this.getR(this._pointStart, this._pointEnd) > 600) {
+            var time1:number = Math.random() * 500 + 1500;
+            var time2:number = Math.random() * 500 + 1500;
+            var time3:number = Math.random() * 500 + 1500;
+            var time4:number = Math.random() * 500 + 1500;
+            var time5:number = Math.random() * 500 + 1500; 
+        } else {
+            var time1:number = Math.random() * 500 + 1250;
+            var time2:number = Math.random() * 500 + 1250;
+            var time3:number = Math.random() * 500 + 1250;
+            var time4:number = Math.random() * 500 + 1250;
+            var time5:number = Math.random() * 500 + 1250; 
+        }
+        this._itemCount = 5;
+        egret.Tween.get(this).to({factor1:1},time1).call(()=> { if (this._goldBmpList[0]) this.putDownItemImg(this._goldBmpList[0]); this._itemCount--; this.checkComplet();});
+        egret.Tween.get(this).to({factor2:1},time2).call(()=> { if (this._goldBmpList[1]) this.putDownItemImg(this._goldBmpList[1]); this._itemCount--; this.checkComplet();});
+        egret.Tween.get(this).to({factor3:1},time3).call(()=> { if (this._goldBmpList[2]) this.putDownItemImg(this._goldBmpList[2]); this._itemCount--; this.checkComplet();});
+        egret.Tween.get(this).to({factor4:1},time4).call(()=> { if (this._goldBmpList[3]) this.putDownItemImg(this._goldBmpList[3]); this._itemCount--; this.checkComplet();});
+        egret.Tween.get(this).to({factor5:1},time5).call(()=> { if (this._goldBmpList[4]) this.putDownItemImg(this._goldBmpList[4]); this._itemCount--; this.checkComplet();});
+    }
+
+    private checkComplet()
+    {
+        if (this._itemCount == 0) {
+            this._itemCount = -1;
+            if (this._onComplete) {
+                this._onComplete();
+                this._onComplete = null;
+            }
+        }
+    }
+
+    public onComplete(onComplet:Function)
+    {
+        this._onComplete = onComplet;
+    }
+
+    /**得到2点间距离 */
+    private getR (point1:number[], point2:number[]):number 
+    {
+        return Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2));
+    }
+
+    private get factor1():number 
+    {
+        return 0;
+    }
+
+    // B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    private set factor1(value:number)
+    {
+        if (this._goldBmpList[0]) {
+            // console.log(this._pointStart[0], this._point1List[0][0], this._point2List[0][0], this._pointEnd[0]);
+            this._goldBmpList[0].x = Math.pow((1 - value), 3) * this._pointStart[0] + 3 * value * Math.pow((1 - value), 2) * this._point1List[0][0] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[0][0] + Math.pow(value, 3) * this._pointEnd[0];
+            this._goldBmpList[0].y = Math.pow((1 - value), 3) * this._pointStart[1] + 3 * value * Math.pow((1 - value), 2) * this._point1List[0][1] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[0][1] + Math.pow(value, 3) * this._pointEnd[1];
+        }
+    }
+
+    private get factor2():number 
+    {
+        return 0;
+    }
+
+    // B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    private set factor2(value:number)
+    {
+        if (this._goldBmpList[1]) {
+            // console.log(this._pointStart[0], this._point1List[0][0], this._point2List[0][0], this._pointEnd[0]);
+            this._goldBmpList[1].x = Math.pow((1 - value), 3) * this._pointStart[0] + 3 * value * Math.pow((1 - value), 2) * this._point1List[1][0] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[1][0] + Math.pow(value, 3) * this._pointEnd[0];
+            this._goldBmpList[1].y = Math.pow((1 - value), 3) * this._pointStart[1] + 3 * value * Math.pow((1 - value), 2) * this._point1List[1][1] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[1][1] + Math.pow(value, 3) * this._pointEnd[1];
+        }
+    }
+
+    private get factor3():number 
+    {
+        return 0;
+    }
+
+    // B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    private set factor3(value:number)
+    {
+        if (this._goldBmpList[2]) {
+            // console.log(this._pointStart[0], this._point1List[0][0], this._point2List[0][0], this._pointEnd[0]);
+            this._goldBmpList[2].x = Math.pow((1 - value), 3) * this._pointStart[0] + 3 * value * Math.pow((1 - value), 2) * this._point1List[2][0] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[2][0] + Math.pow(value, 3) * this._pointEnd[0];
+            this._goldBmpList[2].y = Math.pow((1 - value), 3) * this._pointStart[1] + 3 * value * Math.pow((1 - value), 2) * this._point1List[2][1] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[2][1] + Math.pow(value, 3) * this._pointEnd[1];
+        }
+    }
+
+    private get factor4():number 
+    {
+        return 0;
+    }
+
+    // B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    private set factor4(value:number)
+    {
+        if (this._goldBmpList[3]) {
+            // console.log(this._pointStart[0], this._point1List[0][0], this._point2List[0][0], this._pointEnd[0]);
+            this._goldBmpList[3].x = Math.pow((1 - value), 3) * this._pointStart[0] + 3 * value * Math.pow((1 - value), 2) * this._point1List[3][0] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[3][0] + Math.pow(value, 3) * this._pointEnd[0];
+            this._goldBmpList[3].y = Math.pow((1 - value), 3) * this._pointStart[1] + 3 * value * Math.pow((1 - value), 2) * this._point1List[3][1] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[3][1] + Math.pow(value, 3) * this._pointEnd[1];
+        }
+    }
+
+    private get factor5():number 
+    {
+        return 0;
+    }
+
+    // B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    private set factor5(value:number)
+    {
+        if (this._goldBmpList[4]) {
+            // console.log(this._pointStart[0], this._point1List[0][0], this._point2List[0][0], this._pointEnd[0]);
+            this._goldBmpList[4].x = Math.pow((1 - value), 3) * this._pointStart[0] + 3 * value * Math.pow((1 - value), 2) * this._point1List[4][0] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[4][0] + Math.pow(value, 3) * this._pointEnd[0];
+            this._goldBmpList[4].y = Math.pow((1 - value), 3) * this._pointStart[1] + 3 * value * Math.pow((1 - value), 2) * this._point1List[4][1] + 3 * Math.pow(value, 2) * (1 - value)  * this._point2List[4][1] + Math.pow(value, 3) * this._pointEnd[1];
+        }
+    }
+}
