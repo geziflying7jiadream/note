@@ -1,0 +1,88 @@
+/*********************接口调用*************************/
+public arrtarget:Array<eui.Image> = [];
+    public testCreateGameScene2(){
+        var startX:number = 100;
+        var startY:number = 300;
+        var endX:number = 500;
+        var endY:number = 500;
+        for(var i = 0; i < 6; i++){
+            var target = new eui.Image();
+            target.source = "wddx_ic_004";
+            target.width = target.height = StringUtil.getRandom(25,35);
+            this.addChild(target);
+            this.arrtarget.push(target);
+        }
+        for(var i = 0; i < 6; i++){
+            var beisaier:egret.DisplayObjectContainer = new BeiSaiErPanel(this.arrtarget[i],startX,startY,endX,endY);
+            this.addChild(beisaier);
+        }
+    }
+    
+/*********************BeiSaiErPanel.ts*******************************/    
+class BeiSaiErPanel extends egret.DisplayObjectContainer{
+	public target:any;
+	//需求为实现对象沿line3轨迹运动  
+    public objectPoint:egret.Point;//起点P0 
+
+    public objectPoint1:egret.Point;//起点P1 
+    public objectPoint2:egret.Point;//起点P2
+
+    public mainObject:egret.Point;//终点P3
+
+	public _endX:number;
+	public _endY:number;
+
+	public delay:number;//缓动时间
+	public loopLine:boolean;//是否循环播放 默认：false
+
+	public constructor(target:any, startX:number = 0, startY:number = 0,endX:number = 0, endY:number = 0,delay:number = 2000,loopLine:boolean = true) {
+		super();
+		this.addEventListener(egret.Event.ENTER_FRAME,this.onFrame,this);
+		this.target = target;
+		this.objectPoint = new egret.Point(startX,startY);
+
+		var point1_X = startX + Math.random() * 200;
+		var point1_Y = startY + Math.random() * 300 - 100;
+		this.objectPoint1 = new egret.Point(point1_X,point1_Y);
+
+		
+		let point2_X = Math.random() * (endX - startX) + startX;
+		let point2_Y = Math.random() * (endY - startY) + startY;
+		this.objectPoint2 = new egret.Point(point2_X,point2_Y);
+
+		this.mainObject  = new egret.Point(endX,endY);
+
+		this._endX = endX;
+		this._endY = endY;
+		this.delay = delay;
+		this.loopLine = loopLine;
+
+		this.drawLine();
+	}
+
+	public onFrame(e:egret.Event){
+        this.target.x = this.mainObject.x;
+        this.target.y = this.mainObject.y;
+    }
+
+	public drawLine(){
+    	//利用egret的缓动动画Tween来实现动画  
+		//在1秒内，this的factor属性将会缓慢趋近1这个值，这里的factor就是曲线中的t属性，它是从0到1的闭区间。  
+		egret.Tween.get(this,{loop:this.loopLine}).to({factor: 1}, this.delay);
+	}
+    public get factor():number {  
+        return 0;
+    }  
+    //B3(t) = (1-t)3P0 + 3t(1-t)2P1 + 3t2(1-t)P2 + t3P3      贝塞尔曲线3阶运动轨迹方程
+    //起点P0  控制点P1、p2  终点P3  
+    public set factor(value:number) { 
+		this.mainObject.x = Math.pow((1 - value), 3) * this.objectPoint.x + 3 * value * Math.pow((1 - value), 2) * this.objectPoint1.x + 3 * Math.pow(value, 2) * (1 - value)  * this.objectPoint2.x + Math.pow(value, 3) * this._endX;
+		this.mainObject.y = Math.pow((1 - value), 3) * this.objectPoint.y + 3 * value * Math.pow((1 - value), 2) * this.objectPoint1.y + 3 * Math.pow(value, 2) * (1 - value)  * this.objectPoint2.y + Math.pow(value, 3) * this._endY;
+    } 
+}    
+    
+    
+    
+    
+    
+    
