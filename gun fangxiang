@@ -1,0 +1,7 @@
+var v:number = 30;
+        var obj = { x:0, rotation:v };
+        var funcChange = function():void{
+            console.log( this.x +"----"+ this.rotation);
+        }
+        egret.Tween.get( obj, { onChange:funcChange, onChangeObj:obj } )
+            .to( {x:600, rotation:v}, 1000 , egret.Ease.backInOut );
