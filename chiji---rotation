@@ -1,0 +1,151 @@
+class Char extends eui.Component implements eui.UIComponent {
+	public gun: eui.Image;
+	public type: eui.Label;
+	public container:eui.Group;
+	public _type: number = 0;
+
+
+	public rot: number;
+	public sRun: boolean;//枪：旋转角度的顺、逆
+
+	//最大范围角度
+	public maxAngle: number = 60;
+
+	public mayerX: number;
+	public soilderX: number;
+	public mayerY: number;
+	public soilderY: number;
+
+	private _animate: dragonBones.EgretArmatureDisplay;
+	protected get animate() {
+		return this._animate;
+	}
+	public constructor() {
+		super();
+	}
+
+	protected partAdded(partName: string, instance: any): void {
+		super.partAdded(partName, instance);
+	}
+
+
+	protected childrenCreated(): void {
+		super.childrenCreated();
+	}
+
+
+	public leftRenwu() {
+		this.rot = 180;
+		this.sRun = false;//逆
+		// this.shapeRun = false;//顺
+		this.gun.scaleX = 1;	
+		this.container.scaleX = 1;	
+		egret.startTick(this.onTick, this);
+
+	}
+
+	public rightRenwu() {
+		this.gun.scaleX = -1;
+		this.container.scaleX = -1;
+		this.rot = 0;
+		this.sRun = true;//顺
+		// this.shapeRun = true;//逆
+		egret.startTick(this.onTick, this);
+	}
+
+	public init() {
+		this.type.text = this._type ? "敌人" : "主角";
+		//动画
+		this._animate = (DragonBoneManager.getInstance() as DragonBoneManager).createAnimate("chiji") as dragonBones.EgretArmatureDisplay;
+		if (this._animate) {
+			this._animate.x = this.width / 2;
+			this._animate.y = this.height;
+			this.container.addChildAt(this._animate,0);
+			//全部纹理替换
+			// this._animate.armature.replaceTexture(RES.getRes(""));
+			//部分替换
+			//(DragonBoneManager.getInstance() as DragonBoneManager).replaceSlotDisplay("chiji","chiji","youdatui2","tou",this._animate.armature.getSlot("youdatui2"));
+		}
+	}
+
+	private lastTime = 0;
+	private millisecond = 0;
+	/** 操作时间 */
+	private optionTime: number = 2000;
+	private tickCount: number = 0;
+	public autoClickTime: number = egret.getTimer();
+	private onTick(timeStamp: number): boolean {
+		var pass = timeStamp - this.lastTime;
+		this.millisecond += pass;
+		var currentOptionTime = this.optionTime;
+
+		if (this.millisecond >= currentOptionTime) {
+			this.millisecond = 0;
+		}
+		this.onTimer();
+		this.lastTime = timeStamp;
+		return false;
+	}
+
+	public shp: egret.Shape = null;
+	public onTimer() {
+		//枪角度的变化：逆：减 顺：加
+		if (this.sRun == false) this.gun.rotation -= 1;
+		else this.gun.rotation += 1;
+		if (Math.abs(this.gun.rotation) >= this.maxAngle || Math.abs(this.gun.rotation) <= 0 ) {
+			this.sRun = !this.sRun;
+		}
+		//确定扇形的 起、止 角度
+		var baseAngle:number =  Math.PI / 180;
+		var curRot: number = this.gun.rotation + this.rot;
+		var startAngle:number = (this.sRun == false ? this.rot : curRot) * baseAngle;//枪：逆，扇：顺
+		var endAngle:number = (this.sRun == false ? curRot : this.rot) * baseAngle;//枪：顺，扇：逆
+
+		//画扇形
+		if (!this.shp) {
+			this.shp = new egret.Shape();
+			this.addChild(this.shp);
+		}
+		var oX: number = this.gun.x;
+		var oY: number = this.gun.y;
+		var oR: number = this.gun.width;
+		this.shp.graphics.clear();
+		this.shp.graphics.beginFill(0xff0000, 0.3);
+		this.shp.graphics.moveTo(oX, oY);
+		this.shp.graphics.lineTo(oX*2, oY);
+		this.shp.graphics.drawArc(oX, oY, oR, startAngle, endAngle, this.sRun);//根据枪的顺、逆，判断扇形的逆、顺
+		this.shp.graphics.lineTo(oX, oY);
+		this.shp.graphics.endFill();
+	}
+
+	public stopTick() {
+		if (this.shp) this.shp.graphics.clear();
+		egret.stopTick(this.onTick, this);
+	}
+
+	//向上举枪
+	public playUp() {
+		if(this._animate)this._animate.animation.play("1",0);
+	}
+	//向下举枪
+	public playDown() {
+		if(this._animate)this._animate.animation.play("2",0);
+	}
+	//受击动画
+	public playHit() {
+		if(this._animate)this._animate.animation.play("hit",1);
+	}
+	//移动动画
+	public playMove() {
+		if(this._animate)this._animate.animation.play("walk",0);
+	}
+	//停止动画
+	public playStop() {
+		if(this._animate)this._animate.animation.stop();
+	}
+
+	public dispose() {
+
+	}
+}
+window["Char"] = Char;
