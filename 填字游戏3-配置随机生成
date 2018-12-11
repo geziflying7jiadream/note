@@ -1,0 +1,93 @@
+class TestPanel extends BasePanel {
+	public inputStr:eui.EditableText;
+	public randCount:eui.EditableText;//随机空几个
+	public okBtn:MyButton;
+	public clearBtn:MyButton;
+
+	public out:eui.Label;
+
+	public strInfo:string;
+	public count:number = 1;
+	public outOk:any;
+	public constructor() {
+		super();
+	}
+
+	protected partAdded(partName:string,instance:any):void
+	{
+		super.partAdded(partName,instance);
+	}
+
+
+	protected childrenCreated():void
+	{
+		super.childrenCreated();
+		this.inputStr.addEventListener(egret.FocusEvent.FOCUS_OUT,this.loseFocus,this);
+		this.randCount.addEventListener(egret.FocusEvent.FOCUS_OUT,this.loseFocus1,this);
+		this.okBtn.setCallBack(egret.TouchEvent.TOUCH_TAP,this.onOkBtn,this);
+		this.clearBtn.setCallBack(egret.TouchEvent.TOUCH_TAP,this.onclearBtn,this);
+	}
+
+	public loseFocus(e:egret.Event){
+		console.log(e.target);
+		this.strInfo = e.target.text;
+	}
+	public loseFocus1(e:egret.Event){
+		console.log(e.target);
+		this.count = e.target.text ? parseInt(e.target.text) : 1;
+	}
+
+	public onOkBtn(e:egret.TouchEvent){
+		//处理strInfo的信息，随机生成配置
+		this.outOk = this.createJson();
+		this.out.text = this.outOk ? JSON.stringify(this.outOk) : "";
+	}
+
+	public createJson(){
+		var id:number = 0;
+		var strArr:string[] = [];
+		var value:string[] = [];
+		var valueIndex:number[] = [];
+
+		var tmpStrArr:string[] = [];//临时存储的数组
+		if(this.strInfo && this.strInfo.length >= 4){
+			var len:number = this.strInfo.length;
+			for(var i = 0; i < len; i++){
+				if(this.strInfo.substr(i,1)){
+					var str:string = this.strInfo.substr(i,1);
+					strArr.push(str);
+					tmpStrArr.push(str);
+				}
+			}
+			//随机index个
+			// var count:number = 2;
+			while(this.count>0){
+				var rand:number = StringUtil.getRandom(tmpStrArr.length-1,0);
+				if(strArr.indexOf(tmpStrArr[rand]) != -1){
+					var index:number = strArr.indexOf(tmpStrArr[rand]);
+					//更新数组
+					value.push(strArr[index]);
+					valueIndex.push(index);
+					//修改数组
+					strArr[index] = "*";
+					//删除临时数据
+					tmpStrArr.splice(rand,1);
+					this.count--;
+				}
+			}
+		}
+		var jsonData:any = {"id":id,"key":strArr,"value":value,"valueIndex":valueIndex};
+		return jsonData;
+	}
+
+	public onclearBtn(e:egret.TouchEvent){
+		this.inputStr.text = "";
+		this.strInfo = "";
+		this.randCount.text = "";
+		this.count = 1;
+		this.out.text = "";
+		this.outOk = "";
+	}
+	
+	
+}
