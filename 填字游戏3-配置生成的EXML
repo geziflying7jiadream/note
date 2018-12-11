@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="TestPanelSkin" width="640" height="1136" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="1679c3fca2e" ></w:Config>
+	<e:Image width="100%" height="100%" source="bg_png"/>
+	<e:Label text="id:" x="24" y="154" size="50"/>
+	<e:Label text="填字猜猜---生成配置" y="70" size="40" anchorOffsetX="0" width="441" textColor="0xf40cc4" textAlign="center" horizontalCenter="0" bold="true" strokeColor="0x2bf232" borderColor="0x5af416" border="true" background="true" backgroundColor="0xe2d588"/>
+	<e:Label text="输入文字:" x="10" y="258" anchorOffsetX="0" width="77" anchorOffsetY="0" height="60" size="30" bold="true"/>
+	<e:Label text="猜字个数:" x="16" y="358" anchorOffsetX="0" width="72" anchorOffsetY="0" height="70" bold="true"/>
+	<e:EditableText id="inputStr" width="544" text="" x="88" y="242" anchorOffsetX="0" anchorOffsetY="0" size="60" textAlign="left" prompt="请输入..." verticalAlign="middle" stroke="5" strokeColor="0x5fc92c" height="100"/>
+	<e:EditableText id="randCount" width="200" text="" x="102" y="388" anchorOffsetX="0" anchorOffsetY="0" size="30" textAlign="left" prompt="输入猜字数量" verticalAlign="middle" stroke="5" strokeColor="0x5FC92C"/>
+	<e:EditableText id="idNumText" width="200" text="" x="100" y="166" anchorOffsetX="0" anchorOffsetY="0" size="30" textAlign="left" prompt="输入id号" verticalAlign="middle" stroke="5" strokeColor="0x5FC92C"/>
+	<ns1:MyButton id="okBtn" label="确定" x="64" y="478" anchorOffsetX="0" width="253" anchorOffsetY="0" height="89">
+		<ns1:skinName>
+			<e:Skin states="up,down,disabled">
+			<e:Image width="100%" height="100%" source="pos_png"/>
+			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0" size="50" textColor="0xdb1111" bold="true"/>
+			</e:Skin>
+		</ns1:skinName>
+	</ns1:MyButton>
+	<ns1:MyButton id="clearBtn" label="清除" x="348" y="482" anchorOffsetX="0" width="253" anchorOffsetY="0" height="89">
+		<ns1:skinName>
+		<e:Skin states="up,down,disabled">
+			<e:Image width="100%" height="100%" source="pos_png"/>
+			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0" size="50" textColor="0xdb1111" bold="true"/>
+		</e:Skin>
+		</ns1:skinName>
+	</ns1:MyButton>
+	<e:Label id="out" text="生成json配置区域" x="12" y="676" anchorOffsetX="0" width="610" anchorOffsetY="0" height="440"/>
+</e:Skin>
