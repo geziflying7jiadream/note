@@ -30,6 +30,8 @@
  微信小程序学习视频 http://www.php.cn/course/678.html
  腾讯云开发环境 邮箱用户名、Jiagege123?
  
+ ￥￥￥菜鸟教程链接地址 https://www.runoob.com/
+ 
 # phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
