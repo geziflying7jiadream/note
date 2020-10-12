@@ -43,3 +43,4 @@
 # wampserver下载地址
 # phpstudy下载地址
 # xammp下载地址
+# 看源社区（开发源码示例社区） http://www.see-source.com/minapp.html
