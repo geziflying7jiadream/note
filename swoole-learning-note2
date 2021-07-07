@@ -1,0 +1,77 @@
+###基本实例 下面贴一个基本的基于swoole的echo服务器
+
+// Server
+class Server
+{
+    private $serv;
+
+    public function __construct() {
+        $this->serv = new swoole_server("0.0.0.0", 9501);
+        $this->serv->set(array(
+            'worker_num' => 8,
+            'daemonize' => false,
+            'max_request' => 10000,
+            'dispatch_mode' => 2,
+            'debug_mode'=> 1
+        ));
+
+        $this->serv->on('Start', array($this, 'onStart'));
+        $this->serv->on('Connect', array($this, 'onConnect'));
+        $this->serv->on('Receive', array($this, 'onReceive'));
+        $this->serv->on('Close', array($this, 'onClose'));
+
+        $this->serv->start();
+    }
+
+    public function onStart( $serv ) {
+        echo "Start\n";
+    }
+
+    public function onConnect( $serv, $fd, $from_id ) {
+        $serv->send( $fd, "Hello {$fd}!" );
+    }
+
+    public function onReceive( swoole_server $serv, $fd, $from_id, $data ) {
+        echo "Get Message From Client {$fd}:{$data}\n";
+    }
+
+    public function onClose( $serv, $fd, $from_id ) {
+        echo "Client {$fd} close connection\n";
+    }
+}
+// 启动服务器
+$server = new Server();
+从代码中可以看出，创建一个swoole_server基本分三步：
+
+通过构造函数创建swoole_server对象
+调用set函数设置swoole_server的相关配置选项
+调用on函数设置相关回调函数 关于set配置选项以及on回调函数的具体说明，请参考我整理的swoole文档( 配置选项)
+这里只给出简单介绍。onStart回调在server运行前被调用，onConnect在有新客户端连接过来时被调用，onReceive函数在有数据发送到server时被调用，onClose在有客户端断开连接时被调用。 这里就可以大概看出如何使用swoole：在onConnect处监听新的连接;在onReceive处接收数据并处理，然后可以调用send函数将处理结果发送出去;在onClose处处理客户端下线的事件。
+
+下面贴出客户端的代码：
+
+<?php
+class Client
+{
+	private $client;
+
+	public function __construct() {
+		$this->client = new swoole_client(SWOOLE_SOCK_TCP);
+	}
+	
+	public function connect() {
+		if( !$this->client->connect("127.0.0.1", 9501 , 1) ) {
+			echo "Error: {$fp->errMsg}[{$fp->errCode}]\n";
+		}
+		$message = $this->client->recv();
+		echo "Get Message From Server:{$message}\n";
+
+		fwrite(STDOUT, "请输入消息：");  
+		$msg = trim(fgets(STDIN));
+		$this->client->send( $msg );
+	}
+}
+
+$client = new Client();
+$client->connect();
+这里，通过swoole_client创建一个基于TCP的客户端实例，并调用connect函数向指定的IP及端口发起连接请求。随后即可通过recv()和send()两个函数来接收和发送请求。需要注意的是，这里我使用了默认的同步阻塞客户端，因此recv和send操作都会产生网络阻塞。
