@@ -34,6 +34,9 @@
  # proto的使用下载 https://github.com/protocolbuffers/protobuf/releases
  # proto的简介使用 protobuff在转换的运用 https://blog.csdn.net/qq_38410730/article/details/103679529
  
+ &&&Go语言中文网地址  https://studygolang.com/articles/19654
+ Go语言基础学习详情地址 http://c.biancheng.net/view/3990.html
+ 
 # phpstorm下载地址 
 # Linux下载地址 
 # swoole下载地址
